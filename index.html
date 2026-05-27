@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sipse Mudanzas y Fletes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f2ed;
+    --orange: #e85d1a;
+    --orange-dark: #c44b12;
+    --orange-light: #ff7a35;
+    --gray: #1a1a1a;
+    --gray-mid: #2e2e2e;
+    --gray-light: #444;
+    --muted: #888;
+    --border: rgba(255,255,255,0.08);
+    --success: #2ecc71;
+    --warning: #f39c12;
+    --danger: #e74c3c;
+    --info: #3498db;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* ─── VIEWS ─── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ─── LANDING ─── */
+  #landing {
+    min-height: 100vh;
+  }
+
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 40px;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.95), transparent);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; letter-spacing: 2px;
+    color: var(--orange);
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-actions { display: flex; gap: 12px; }
+  .btn {
+    padding: 10px 22px; border-radius: 4px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    cursor: pointer; border: none; transition: all .2s;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-outline {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--white);
+  }
+  .btn-outline:hover { border-color: var(--orange); color: var(--orange); }
+  .btn-primary {
+    background: var(--orange); color: var(--white);
+  }
+  .btn-primary:hover { background: var(--orange-light); }
+  .btn-ghost { background: transparent; color: var(--muted); }
+  .btn-ghost:hover { color: var(--white); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover { background: #c0392b; }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-success:hover { background: #27ae60; }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 120px 40px 80px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -20%; right: -10%;
+    width: 70vw; height: 70vw;
+    background: radial-gradient(circle, rgba(232,93,26,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    color: var(--orange); letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 14vw, 180px);
+    line-height: 0.9; letter-spacing: -2px;
+    max-width: 900px;
+  }
+  .hero-title .accent { color: var(--orange); }
+  .hero-sub {
+    margin-top: 32px; max-width: 480px;
+    font-size: 18px; font-weight: 300; line-height: 1.6;
+    color: rgba(245,242,237,0.7);
+  }
+  .hero-cta { margin-top: 48px; display: flex; gap: 16px; flex-wrap: wrap; }
+
+  .hero-stats {
+    margin-top: 80px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    max-width: 560px;
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+  }
+  .stat {
+    padding: 24px 20px; background: rgba(255,255,255,0.03);
+  }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif; font-size: 42px;
+    color: var(--orange); line-height: 1;
+  }
+  .stat-label {
+    font-size: 12px; color: var(--muted); margin-top: 4px; font-weight: 300;
+  }
+
+  /* Zones */
+  .section { padding: 100px 40px; }
+  .section-label {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--orange); letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 6vw, 72px); line-height: 1;
+    margin-bottom: 48px;
+  }
+
+  .zones-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+  }
+  .zone-card {
+    padding: 32px 28px; background: rgba(255,255,255,0.02);
+    transition: background .2s;
+  }
+  .zone-card:hover { background: rgba(232,93,26,0.06); }
+  .zone-icon { font-size: 28px; margin-bottom: 16px; }
+  .zone-name { font-size: 18px; font-weight: 500; margin-bottom: 8px; }
+  .zone-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* Services */
+  .services-list {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .service-item {
+    padding: 28px; border: 1px solid var(--border); border-radius: 8px;
+    transition: border-color .2s, transform .2s;
+  }
+  .service-item:hover { border-color: var(--orange); transform: translateY(-2px); }
+  .service-item h3 { font-size: 16px; font-weight: 500; margin-bottom: 8px; }
+  .service-item p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* Contact */
+  .contact-strip {
+    background: var(--orange);
+    padding: 60px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 24px;
+  }
+  .contact-strip h2 {
+    font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--black);
+  }
+  .btn-dark { background: var(--black); color: var(--white); }
+  .btn-dark:hover { background: #1a1a1a; }
+
+  /* Footer */
+  footer {
+    padding: 40px; border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 13px; color: var(--muted); flex-wrap: wrap; gap: 16px;
+  }
+
+  /* ─── LOGIN MODAL ─── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--gray); border: 1px solid var(--border);
+    border-radius: 12px; padding: 48px; width: 100%; max-width: 400px;
+    position: relative;
+  }
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 32px;
+    margin-bottom: 8px; color: var(--orange);
+  }
+  .modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+  .form-group { margin-bottom: 20px; }
+  .form-group label {
+    display: block; font-size: 11px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .form-control {
+    width: 100%; padding: 12px 16px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--white); font-family: 'DM Sans', sans-serif;
+    font-size: 14px; transition: border-color .2s; outline: none;
+  }
+  .form-control:focus { border-color: var(--orange); }
+  .form-control::placeholder { color: var(--muted); }
+  select.form-control option { background: var(--gray); }
+  textarea.form-control { resize: vertical; min-height: 80px; }
+  .error-msg {
+    color: var(--danger); font-size: 12px; margin-top: 8px; display: none;
+  }
+  .modal-close {
+    position: absolute; top: 16px; right: 16px;
+    background: none; border: none; color: var(--muted);
+    font-size: 20px; cursor: pointer; line-height: 1;
+    padding: 4px 8px;
+  }
+  .modal-close:hover { color: var(--white); }
+
+  /* ─── PANEL ─── */
+  #panel { min-height: 100vh; background: var(--black); }
+
+  .panel-nav {
+    background: var(--gray); border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex; align-items: center; gap: 0;
+  }
+  .panel-logo {
+    font-family: 'Bebas Neue', sans-serif; font-size: 22px;
+    color: var(--orange); letter-spacing: 2px;
+    padding: 18px 0; margin-right: 32px;
+  }
+  .panel-tabs { display: flex; gap: 0; flex: 1; }
+  .tab-btn {
+    padding: 20px 20px; background: none; border: none;
+    color: var(--muted); font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    border-bottom: 2px solid transparent; transition: all .2s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--white); }
+  .tab-btn.active { color: var(--orange); border-bottom-color: var(--orange); }
+  .panel-user {
+    font-size: 12px; color: var(--muted);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .user-badge {
+    padding: 4px 10px; background: rgba(232,93,26,0.15);
+    border: 1px solid rgba(232,93,26,0.3); border-radius: 20px;
+    color: var(--orange); font-size: 11px; font-weight: 500;
+  }
+
+  .panel-content { padding: 32px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ─── FORM VIAJE ─── */
+  .form-card {
+    background: var(--gray); border: 1px solid var(--border);
+    border-radius: 10px; padding: 32px; max-width: 760px;
+  }
+  .form-card h2 {
+    font-family: 'Bebas Neue', sans-serif; font-size: 28px;
+    color: var(--orange); margin-bottom: 4px;
+  }
+  .form-card .subtitle { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-grid .full { grid-column: 1/-1; }
+  .form-section-title {
+    grid-column: 1/-1;
+    font-size: 11px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--orange);
+    padding-bottom: 8px; border-bottom: 1px solid var(--border);
+    margin: 8px 0 4px;
+  }
+  .maps-row { display: flex; gap: 8px; align-items: flex-end; }
+  .maps-row .form-control { flex: 1; }
+  .btn-maps {
+    padding: 12px 14px; background: rgba(66,133,244,0.15);
+    border: 1px solid rgba(66,133,244,0.3); border-radius: 6px;
+    color: #4285f4; cursor: pointer; font-size: 18px;
+    transition: background .2s; white-space: nowrap;
+  }
+  .btn-maps:hover { background: rgba(66,133,244,0.25); }
+
+  /* ─── AGENDA DUEÑO ─── */
+  .agenda-toolbar {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .agenda-toolbar h2 {
+    font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--white);
+  }
+  .date-nav { display: flex; align-items: center; gap: 8px; }
+  .date-nav button {
+    padding: 8px 14px; background: var(--gray-mid); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--white); cursor: pointer; font-size: 16px;
+  }
+  .date-nav button:hover { border-color: var(--orange); }
+  .date-label {
+    font-family: 'DM Mono', monospace; font-size: 14px;
+    padding: 8px 16px; background: var(--gray-mid);
+    border: 1px solid var(--border); border-radius: 6px;
+    min-width: 200px; text-align: center;
+  }
+
+  .agenda-grid {
+    display: grid; gap: 1px;
+    background: var(--border); border-radius: 8px; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .agenda-header {
+    display: flex; background: var(--gray-mid);
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+    font-weight: 500; color: var(--muted);
+  }
+  .agenda-header-cell {
+    flex: 1; padding: 12px 16px; text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .agenda-header-cell:last-child { border-right: none; }
+  .agenda-row {
+    display: flex; background: var(--black); min-height: 80px;
+    border-bottom: 1px solid var(--border);
+  }
+  .agenda-row:last-child { border-bottom: none; }
+  .agenda-time {
+    width: 70px; flex-shrink: 0;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--muted); padding: 12px 16px;
+    border-right: 1px solid var(--border);
+    display: flex; align-items: flex-start; padding-top: 14px;
+  }
+  .agenda-cell {
+    flex: 1; padding: 8px; border-right: 1px solid var(--border);
+    min-width: 0;
+  }
+  .agenda-cell:last-child { border-right: none; }
+
+  .viaje-chip {
+    padding: 8px 10px; border-radius: 6px; margin-bottom: 6px;
+    font-size: 12px; cursor: pointer; transition: opacity .2s;
+    border-left: 3px solid transparent;
+  }
+  .viaje-chip:hover { opacity: 0.85; }
+  .viaje-chip.confirmado {
+    background: rgba(46,204,113,0.1); border-left-color: var(--success);
+  }
+  .viaje-chip.modificado {
+    background: rgba(243,156,18,0.1); border-left-color: var(--warning);
+  }
+  .viaje-chip.cancelado {
+    background: rgba(231,76,60,0.1); border-left-color: var(--danger);
+    opacity: 0.6;
+  }
+  .chip-hora { font-family: 'DM Mono', monospace; font-weight: 500; }
+  .chip-cliente { font-weight: 500; margin-top: 2px; }
+  .chip-ruta { font-size: 11px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Vista simplificada */
+  .simple-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .simple-card {
+    background: var(--gray); border: 1px solid var(--border);
+    border-radius: 8px; padding: 20px; cursor: pointer;
+    transition: border-color .2s, transform .2s;
+  }
+  .simple-card:hover { border-color: var(--orange); transform: translateY(-2px); }
+  .simple-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .simple-hora {
+    font-family: 'Bebas Neue', sans-serif; font-size: 36px;
+    color: var(--orange); line-height: 1;
+  }
+  .simple-camion {
+    font-size: 12px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: 1px; padding: 4px 10px;
+    background: rgba(232,93,26,0.15); border-radius: 20px;
+    color: var(--orange);
+  }
+  .simple-ruta { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  .simple-ayudantes { font-size: 12px; color: var(--muted); }
+
+  /* Lista completa */
+  .viajes-table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+  }
+  .viajes-table th {
+    text-align: left; padding: 12px 16px;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--muted); font-weight: 500;
+    border-bottom: 1px solid var(--border);
+  }
+  .viajes-table td {
+    padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: middle;
+  }
+  .viajes-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .status-badge {
+    padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .status-confirmado { background: rgba(46,204,113,0.15); color: #2ecc71; }
+  .status-modificado { background: rgba(243,156,18,0.15); color: #f39c12; }
+  .status-cancelado { background: rgba(231,76,60,0.15); color: #e74c3c; }
+
+  .action-btns { display: flex; gap: 6px; }
+  .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 4px; }
+
+  /* Assign modal */
+  .assign-section {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 8px; padding: 20px; margin-top: 16px;
+  }
+  .assign-section h4 {
+    font-size: 13px; font-weight: 500; margin-bottom: 16px; color: var(--orange);
+  }
+
+  .empty-state {
+    text-align: center; padding: 60px 20px; color: var(--muted);
+  }
+  .empty-state .icon { font-size: 40px; margin-bottom: 16px; }
+  .empty-state p { font-size: 14px; }
+
+  .loading-spinner {
+    display: inline-block; width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-top-color: var(--white); border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 999;
+    padding: 14px 20px; border-radius: 8px;
+    background: var(--gray); border: 1px solid var(--border);
+    font-size: 14px; display: flex; align-items: center; gap: 10px;
+    transform: translateY(100px); opacity: 0;
+    transition: all .3s; pointer-events: none; max-width: 360px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { border-color: var(--success); }
+  .toast.error { border-color: var(--danger); }
+
+  /* Detail modal */
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .detail-item label {
+    font-size: 11px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 1px; display: block; margin-bottom: 4px;
+  }
+  .detail-item p { font-size: 14px; font-weight: 500; }
+
+  /* Scrollable table wrapper */
+  .table-wrapper { overflow-x: auto; }
+
+  /* Filter bar */
+  .filter-bar {
+    display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-bar input, .filter-bar select {
+    padding: 9px 14px; background: var(--gray); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--white); font-family: 'DM Sans', sans-serif;
+    font-size: 13px; outline: none;
+  }
+  .filter-bar input:focus, .filter-bar select:focus { border-color: var(--orange); }
+  .filter-bar select option { background: var(--gray); }
+
+  @media (max-width: 768px) {
+    .nav { padding: 16px 20px; }
+    .hero { padding: 100px 20px 60px; }
+    .section { padding: 60px 20px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .panel-content { padding: 16px; }
+    .panel-nav { padding: 0 16px; overflow-x: auto; }
+    .tab-btn { padding: 16px 14px; font-size: 12px; }
+    .contact-strip { padding: 40px 20px; }
+    .hero-stats { grid-template-columns: 1fr; }
+    .detail-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ LANDING ═══ -->
+<div id="landing" class="view active">
+  <nav class="nav">
+    <div class="nav-logo">SIPSE<span> MUDANZAS</span></div>
+    <div class="nav-actions">
+      <button class="btn btn-outline" onclick="openLoginModal()">Acceso interno</button>
+      <a href="https://wa.me/5491100000000?text=Hola,%20quiero%20un%20presupuesto" target="_blank" class="btn btn-primary">📱 WhatsApp</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-tag">Buenos Aires · Conurbano · Interior</div>
+    <h1 class="hero-title">MOVÉ<br>LO QUE<br><span class="accent">IMPORTA.</span></h1>
+    <p class="hero-sub">Mudanzas y fletes en CABA, Conurbano Bonaerense y destinos del interior. Flota propia, equipo profesional.</p>
+    <div class="hero-cta">
+      <a href="https://wa.me/5491100000000?text=Hola,%20quiero%20un%20presupuesto" target="_blank" class="btn btn-primary">Pedir presupuesto</a>
+      <a href="#servicios" class="btn btn-outline">Ver servicios</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">8</div>
+        <div class="stat-label">Camiones propios</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">+500</div>
+        <div class="stat-label">Mudanzas realizadas</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">24hs</div>
+        <div class="stat-label">Respuesta</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="zonas">
+    <div class="section-label">Cobertura</div>
+    <h2 class="section-title">DONDE<br>OPERAMOS</h2>
+    <div class="zones-grid">
+      <div class="zone-card">
+        <div class="zone-icon">🏙️</div>
+        <div class="zone-name">CABA</div>
+        <div class="zone-desc">Todos los barrios de Capital Federal, sin excepción.</div>
+      </div>
+      <div class="zone-card">
+        <div class="zone-icon">🏘️</div>
+        <div class="zone-name">GBA Norte</div>
+        <div class="zone-desc">San Isidro, Vicente López, Tigre, San Martín y alrededores.</div>
+      </div>
+      <div class="zone-card">
+        <div class="zone-icon">🏘️</div>
+        <div class="zone-name">GBA Oeste</div>
+        <div class="zone-desc">La Matanza, Morón, Tres de Febrero, Hurlingham y zona.</div>
+      </div>
+      <div class="zone-card">
+        <div class="zone-icon">🏘️</div>
+        <div class="zone-name">GBA Sur</div>
+        <div class="zone-desc">Lomas de Zamora, Quilmes, Avellaneda, Lanús y más.</div>
+      </div>
+      <div class="zone-card">
+        <div class="zone-icon">🛣️</div>
+        <div class="zone-name">Interior</div>
+        <div class="zone-desc">La Plata, Rosario, Córdoba y otros destinos. Consultar.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="servicios" style="padding-top: 0;">
+    <div class="section-label">Qué hacemos</div>
+    <h2 class="section-title">SERVICIOS</h2>
+    <div class="services-list">
+      <div class="service-item">
+        <h3>🚛 Mudanzas completas</h3>
+        <p>Muebles, electrodomésticos, cajas. Carga, transporte y descarga con equipo propio.</p>
+      </div>
+      <div class="service-item">
+        <h3>📦 Fletes y traslados</h3>
+        <p>Desde un colchón hasta cargas completas. Rápido y cuidadoso.</p>
+      </div>
+      <div class="service-item">
+        <h3>❄️ Instalación de aires</h3>
+        <p>Instalación y desinstalación de equipos de aire acondicionado.</p>
+      </div>
+      <div class="service-item">
+        <h3>💡 Desinstalación de luminaria</h3>
+        <p>Retiro de artefactos de iluminación, lámparas y apliques.</p>
+      </div>
+      <div class="service-item">
+        <h3>🪟 Trabajos en altura</h3>
+        <p>Bajada de muebles por balcón, izado y trabajos especiales.</p>
+      </div>
+      <div class="service-item">
+        <h3>📦 Embalaje profesional</h3>
+        <p>Protección de objetos frágiles, cuadros, vajilla y electrónica.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="contact-strip">
+    <h2>¿NECESITÁS UN PRESUPUESTO?</h2>
+    <a href="https://wa.me/5491100000000?text=Hola,%20necesito%20un%20presupuesto%20para%20mudanza" target="_blank" class="btn btn-dark" style="font-size: 16px; padding: 16px 32px;">Escribinos por WhatsApp →</a>
+  </div>
+
+  <footer>
+    <div class="nav-logo" style="font-size: 20px;">SIPSE<span style="color: var(--white);"> MUDANZAS</span></div>
+    <span>CABA · Conurbano · Interior · Argentina</span>
+    <button class="btn btn-ghost" onclick="openLoginModal()" style="font-size: 12px;">Acceso operativo</button>
+  </footer>
+</div>
+
+<!-- ═══ PANEL INTERNO ═══ -->
+<div id="panel" class="view">
+  <nav class="panel-nav">
+    <div class="panel-logo">SIPSE</div>
+    <div class="panel-tabs">
+      <button class="tab-btn active" onclick="switchTab('tab-cargar')" id="btn-tab-cargar">Cargar viaje</button>
+      <button class="tab-btn" onclick="switchTab('tab-agenda')" id="btn-tab-agenda" style="display:none">Agenda visual</button>
+      <button class="tab-btn" onclick="switchTab('tab-lista')" id="btn-tab-lista" style="display:none">Todos los viajes</button>
+    </div>
+    <div class="panel-user">
+      <span id="user-badge" class="user-badge">—</span>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Salir</button>
+    </div>
+  </nav>
+
+  <div class="panel-content">
+
+    <!-- TAB: Cargar viaje -->
+    <div id="tab-cargar" class="tab-panel active">
+      <div class="form-card">
+        <h2>Nuevo viaje</h2>
+        <p class="subtitle">Completá los datos del servicio vendido</p>
+        <div class="form-grid" id="form-viaje">
+
+          <div class="form-section-title">Fecha y hora</div>
+
+          <div class="form-group">
+            <label>Fecha *</label>
+            <input type="date" class="form-control" id="f-fecha" required>
+          </div>
+          <div class="form-group">
+            <label>Hora de inicio *</label>
+            <input type="time" class="form-control" id="f-hora" required>
+          </div>
+
+          <div class="form-section-title">Cliente</div>
+
+          <div class="form-group">
+            <label>Nombre del cliente *</label>
+            <input type="text" class="form-control" id="f-cliente" placeholder="Ej: María González" required>
+          </div>
+          <div class="form-group">
+            <label>Teléfono *</label>
+            <input type="tel" class="form-control" id="f-telefono" placeholder="11 1234-5678">
+          </div>
+
+          <div class="form-section-title">Ubicaciones</div>
+
+          <div class="form-group full">
+            <label>Origen *</label>
+            <div class="maps-row">
+              <input type="text" class="form-control" id="f-origen" placeholder="Dirección de origen" required>
+              <button class="btn-maps" onclick="openMaps('origen')" title="Ver en Maps">📍</button>
+            </div>
+          </div>
+          <div class="form-group full">
+            <label>Destino *</label>
+            <div class="maps-row">
+              <input type="text" class="form-control" id="f-destino" placeholder="Dirección de destino" required>
+              <button class="btn-maps" onclick="openMaps('destino')" title="Ver en Maps">📍</button>
+            </div>
+          </div>
+
+          <div class="form-section-title">Servicio</div>
+
+          <div class="form-group">
+            <label>Tipo de servicio *</label>
+            <select class="form-control" id="f-tipo">
+              <option value="">— Seleccionar —</option>
+              <option value="Mudanza completa">Mudanza completa</option>
+              <option value="Flete">Flete</option>
+              <option value="Instalación de aires">Instalación de aires</option>
+              <option value="Desinstalación de aires">Desinstalación de aires</option>
+              <option value="Desinstalación de luminaria">Desinstalación de luminaria</option>
+              <option value="Trabajos en altura">Trabajos en altura (balcón/izado)</option>
+              <option value="Embalaje">Embalaje profesional</option>
+              <option value="Otro">Otro (ver notas)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Precio presupuestado *</label>
+            <input type="number" class="form-control" id="f-precio" placeholder="Ej: 85000" min="0">
+          </div>
+
+          <div class="form-group full">
+            <label>Notas adicionales</label>
+            <textarea class="form-control" id="f-notas" placeholder="Bajada por balcón, piso sin ascensor, objetos frágiles, etc."></textarea>
+          </div>
+
+          <div class="full" style="margin-top: 8px;">
+            <button class="btn btn-primary" style="width:100%; padding:14px; font-size:15px;" onclick="submitViaje()">
+              <span id="submit-text">Cargar viaje</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Agenda visual (solo dueño) -->
+    <div id="tab-agenda" class="tab-panel">
+      <div class="agenda-toolbar">
+        <h2>Agenda</h2>
+        <div class="date-nav">
+          <button onclick="changeDate(-1)">‹</button>
+          <div class="date-label" id="agenda-date-label">—</div>
+          <button onclick="changeDate(1)">›</button>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="goToday()">Hoy</button>
+        <button class="btn btn-primary btn-sm" onclick="loadAgenda()">Actualizar</button>
+      </div>
+      <div id="agenda-container">
+        <div class="empty-state"><div class="icon">📅</div><p>Cargando agenda...</p></div>
+      </div>
+    </div>
+
+    <!-- TAB: Todos los viajes (solo dueño) -->
+    <div id="tab-lista" class="tab-panel">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <h2 style="font-family:'Bebas Neue',sans-serif; font-size:28px;">Todos los viajes</h2>
+        <button class="btn btn-primary btn-sm" onclick="loadLista()">Actualizar</button>
+      </div>
+      <div class="filter-bar">
+        <input type="date" id="filter-fecha" oninput="filterLista()">
+        <select id="filter-estado" onchange="filterLista()">
+          <option value="">Todos los estados</option>
+          <option value="confirmado">Confirmado</option>
+          <option value="modificado">Modificado</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
+        <select id="filter-camion" onchange="filterLista()">
+          <option value="">Todos los camiones</option>
+        </select>
+        <input type="text" id="filter-buscar" placeholder="Buscar cliente..." oninput="filterLista()" style="min-width:160px;">
+      </div>
+      <div id="lista-container">
+        <div class="empty-state"><div class="icon">🚛</div><p>Cargando viajes...</p></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ MODAL LOGIN ═══ -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeLoginModal()">✕</button>
+    <div class="modal-title">Acceso</div>
+    <p class="modal-sub">Ingresá con tu usuario y contraseña</p>
+    <div class="form-group">
+      <label>Usuario</label>
+      <select class="form-control" id="login-user">
+        <option value="">— Seleccionar —</option>
+        <option value="dueno">Dueño / Organizador</option>
+        <option value="vendedor1">Vendedor 1</option>
+        <option value="vendedor2">Vendedor 2</option>
+        <option value="vendedor3">Vendedor 3</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Contraseña</label>
+      <input type="password" class="form-control" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      <div class="error-msg" id="login-error">Usuario o contraseña incorrectos</div>
+    </div>
+    <button class="btn btn-primary" style="width:100%; padding:14px;" onclick="doLogin()">
+      Ingresar →
+    </button>
+  </div>
+</div>
+
+<!-- ═══ MODAL DETALLE / ASIGNAR ═══ -->
+<div class="modal-overlay" id="detail-modal">
+  <div class="modal" style="max-width:560px; max-height:90vh; overflow-y:auto;">
+    <button class="modal-close" onclick="closeDetailModal()">✕</button>
+    <div id="detail-content"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────
+const CAMIONES = ['Ducato A', 'Ducato B', 'Benja 1', 'Benja 2', 'Benja 3', 'Benja 4', 'Juan A', 'Juan B', 'Hugo A', 'Hugo B', '608', 'Gitano', 'Ramón', 'Sprinter'];
+const AYUDANTES_OPC = [0,1,2,3,4,5];
+
+// Contraseñas (en producción estas van en variables de entorno del server)
+const USERS = {
+  'dueno':     { pass: 'sipse2024', role: 'dueno',    name: 'Organizador' },
+  'vendedor1': { pass: 'vende1',    role: 'vendedor', name: 'Vendedor 1' },
+  'vendedor2': { pass: 'vende2',    role: 'vendedor', name: 'Vendedor 2' },
+  'vendedor3': { pass: 'vende3',    role: 'vendedor', name: 'Vendedor 3' },
+};
+
+let currentUser = null;
+let allViajes = [];
+let agendaDate = new Date();
+
+// ─── LANDING / LOGIN ──────────────────────────────────────────
+function openLoginModal() {
+  document.getElementById('login-modal').classList.add('open');
+  document.getElementById('login-error').style.display = 'none';
+}
+function closeLoginModal() {
+  document.getElementById('login-modal').classList.remove('open');
+}
+function doLogin() {
+  const userId = document.getElementById('login-user').value;
+  const pass = document.getElementById('login-pass').value;
+  const u = USERS[userId];
+  if (!u || u.pass !== pass) {
+    document.getElementById('login-error').style.display = 'block';
+    return;
+  }
+  currentUser = { id: userId, ...u };
+  closeLoginModal();
+  enterPanel();
+}
+function logout() {
+  currentUser = null;
+  showView('landing');
+}
+function enterPanel() {
+  showView('panel');
+  document.getElementById('user-badge').textContent = currentUser.name;
+  // Mostrar tabs según rol
+  const isDueno = currentUser.role === 'dueno';
+  document.getElementById('btn-tab-agenda').style.display = isDueno ? '' : 'none';
+  document.getElementById('btn-tab-lista').style.display = isDueno ? '' : 'none';
+  // Setear fecha de hoy en el form
+  document.getElementById('f-fecha').value = todayStr();
+  // Poblar select camiones en filtro
+  const fc = document.getElementById('filter-camion');
+  fc.innerHTML = '<option value="">Todos los camiones</option>';
+  CAMIONES.forEach(c => fc.innerHTML += `<option value="${c}">${c}</option>`);
+  switchTab('tab-cargar');
+}
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('btn-'+id).classList.add('active');
+  if (id === 'tab-agenda') loadAgenda();
+  if (id === 'tab-lista') loadLista();
+}
+
+// ─── UTILS ────────────────────────────────────────────────────
+function todayStr() {
+  return new Date().toISOString().split('T')[0];
+}
+function fmtDate(str) {
+  if (!str) return '—';
+  const [y,m,d] = str.split('-');
+  return `${d}/${m}/${y}`;
+}
+function fmtMoney(n) {
+  if (!n) return '—';
+  return '$' + Number(n).toLocaleString('es-AR');
+}
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = (type==='success' ? '✓ ' : '✕ ') + msg;
+  t.className = `toast show ${type}`;
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ─── MAPS ─────────────────────────────────────────────────────
+function openMaps(field) {
+  const addr = document.getElementById('f-'+field).value;
+  if (!addr.trim()) { showToast('Ingresá una dirección primero', 'error'); return; }
+  window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr+', Buenos Aires, Argentina')}`, '_blank');
+}
+
+// ─── SUBMIT VIAJE ─────────────────────────────────────────────
+async function submitViaje() {
+  const fields = ['f-fecha','f-hora','f-cliente','f-origen','f-destino','f-tipo'];
+  for (const f of fields) {
+    if (!document.getElementById(f).value.trim()) {
+      showToast('Completá todos los campos obligatorios (*)', 'error');
+      document.getElementById(f).focus();
+      return;
+    }
+  }
+
+  const data = {
+    fecha:    document.getElementById('f-fecha').value,
+    hora:     document.getElementById('f-hora').value,
+    cliente:  document.getElementById('f-cliente').value.trim(),
+    telefono: document.getElementById('f-telefono').value.trim(),
+    origen:   document.getElementById('f-origen').value.trim(),
+    destino:  document.getElementById('f-destino').value.trim(),
+    tipo:     document.getElementById('f-tipo').value,
+    precio:   document.getElementById('f-precio').value || '',
+    notas:    document.getElementById('f-notas').value.trim(),
+    vendedor: currentUser.name,
+    estado:   'confirmado',
+    camion:   '',
+    ayudantes:'',
+    timestamp: new Date().toISOString(),
+  };
+
+  const btn = document.querySelector('#tab-cargar .btn-primary');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loading-spinner"></span> Guardando...';
+
+  try {
+    const res = await fetch('/.netlify/functions/guardar-viaje', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error(await res.text());
+    showToast('Viaje cargado correctamente');
+    // Limpiar form
+    ['f-cliente','f-telefono','f-origen','f-destino','f-precio','f-notas'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('f-tipo').selectedIndex = 0;
+    document.getElementById('f-hora').value = '';
+  } catch(e) {
+    showToast('Error al guardar. Revisá la conexión.', 'error');
+    console.error(e);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span id="submit-text">Cargar viaje</span>';
+  }
+}
+
+// ─── AGENDA VISUAL ────────────────────────────────────────────
+function changeDate(delta) {
+  agendaDate.setDate(agendaDate.getDate() + delta);
+  loadAgenda();
+}
+function goToday() {
+  agendaDate = new Date();
+  loadAgenda();
+}
+function updateDateLabel() {
+  const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+  document.getElementById('agenda-date-label').textContent =
+    agendaDate.toLocaleDateString('es-AR', opts);
+}
+
+async function loadAgenda() {
+  updateDateLabel();
+  const container = document.getElementById('agenda-container');
+  container.innerHTML = '<div class="empty-state"><div class="icon">⏳</div><p>Cargando...</p></div>';
+
+  try {
+    const dateStr = agendaDate.toISOString().split('T')[0];
+    const res = await fetch(`/.netlify/functions/obtener-viajes?fecha=${dateStr}`);
+    if (!res.ok) throw new Error();
+    const viajes = await res.json();
+    renderAgenda(viajes, dateStr);
+  } catch(e) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Error al cargar datos. ¿Está configurado Google Sheets?</p></div>';
+  }
+}
+
+function renderAgenda(viajes, dateStr) {
+  const container = document.getElementById('agenda-container');
+
+  // Horas del día (6am a 22pm)
+  const HORAS = [];
+  for (let h = 6; h <= 22; h++) HORAS.push(`${String(h).padStart(2,'0')}:00`);
+
+  // Toggle vista simplificada / completa
+  let modoSimple = false;
+
+  const buildHTML = () => {
+    if (modoSimple) {
+      // Vista simplificada: cards por camión asignado
+      const asignados = viajes.filter(v => v.camion && v.estado !== 'cancelado');
+      if (!asignados.length) return '<div class="empty-state"><div class="icon">🚛</div><p>No hay viajes asignados para este día</p></div>';
+      return `<div class="simple-grid">${asignados.map(v => `
+        <div class="simple-card" onclick="openDetail('${v.id}')">
+          <div class="simple-card-header">
+            <div class="simple-hora">${v.hora || '--:--'}</div>
+            <div class="simple-camion">${v.camion}</div>
+          </div>
+          <div class="simple-ruta">${v.origen || '?'} → ${v.destino || '?'}</div>
+          <div class="simple-ayudantes">👷 ${v.ayudantes || 0} ayudantes · ${v.tipo || 'Mudanza'}</div>
+        </div>`).join('')}</div>`;
+    }
+
+    // Vista grilla por camión
+    const camionesActivos = CAMIONES.filter(cam =>
+      viajes.some(v => v.camion === cam) || true
+    ).slice(0, 8); // max 8 cols visible
+
+    let html = `<div style="overflow-x:auto"><div class="agenda-grid" style="grid-template-columns: 60px repeat(${camionesActivos.length}, 1fr); min-width: ${60 + camionesActivos.length*150}px">`;
+
+    // Header
+    html += `<div class="agenda-header" style="display:contents">
+      <div class="agenda-header-cell" style="background:var(--gray-mid);padding:12px 8px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;border-right:1px solid var(--border);">Hora</div>
+      ${camionesActivos.map(c => `<div class="agenda-header-cell" style="background:var(--gray-mid);padding:12px 8px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;border-right:1px solid var(--border);text-align:center;">${c}</div>`).join('')}
+    </div>`;
+
+    // Filas por hora
+    HORAS.forEach(hora => {
+      html += `<div style="display:contents">
+        <div style="grid-column:1;padding:10px 8px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--black);text-align:center;">${hora}</div>`;
+      camionesActivos.forEach(cam => {
+        const viajesSlot = viajes.filter(v =>
+          v.camion === cam && v.hora && v.hora.substring(0,2) === hora.substring(0,2)
+        );
+        html += `<div style="padding:6px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--black);min-height:60px;">`;
+        viajesSlot.forEach(v => {
+          html += `<div class="viaje-chip ${v.estado}" onclick="openDetail('${v.id}')">
+            <div class="chip-hora">${v.hora}</div>
+            <div class="chip-cliente">${v.cliente}</div>
+            <div class="chip-ruta">${v.origen||''} → ${v.destino||''}</div>
+          </div>`;
+        });
+        html += `</div>`;
+      });
+      html += `</div>`;
+    });
+
+    // Viajes sin camión asignado
+    const sinCamion = viajes.filter(v => !v.camion);
+    if (sinCamion.length) {
+      html += `<div style="grid-column:1/-1;padding:16px;background:rgba(243,156,18,0.05);border-top:2px solid rgba(243,156,18,0.3);">
+        <div style="font-size:11px;color:var(--warning);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-weight:500;">⚠️ Sin camión asignado (${sinCamion.length})</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          ${sinCamion.map(v => `<div class="viaje-chip confirmado" onclick="openDetail('${v.id}')">
+            <div class="chip-hora">${v.hora || 'Sin hora'}</div>
+            <div class="chip-cliente">${v.cliente}</div>
+            <div class="chip-ruta">${v.origen||''} → ${v.destino||''}</div>
+          </div>`).join('')}
+        </div>
+      </div>`;
+    }
+    html += `</div></div>`;
+    return html;
+  };
+
+  container.innerHTML = `
+    <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center;">
+      <button class="btn btn-outline btn-sm ${!modoSimple?'active':''}" id="btn-completa" onclick="toggleModoAgenda(false)">Vista completa</button>
+      <button class="btn btn-outline btn-sm ${modoSimple?'active':''}" id="btn-simple" onclick="toggleModoAgenda(true)">Vista del chofer</button>
+      <span style="font-size:12px;color:var(--muted);">${viajes.length} viaje${viajes.length!==1?'s':''} este día</span>
+    </div>
+    <div id="agenda-inner">${buildHTML()}</div>
+  `;
+
+  window.toggleModoAgenda = (simple) => {
+    modoSimple = simple;
+    document.getElementById('agenda-inner').innerHTML = buildHTML();
+    document.getElementById('btn-completa').classList.toggle('active', !simple);
+    document.getElementById('btn-simple').classList.toggle('active', simple);
+  };
+}
+
+// ─── LISTA COMPLETA ───────────────────────────────────────────
+async function loadLista() {
+  const container = document.getElementById('lista-container');
+  container.innerHTML = '<div class="empty-state"><div class="icon">⏳</div><p>Cargando...</p></div>';
+  try {
+    const res = await fetch('/.netlify/functions/obtener-viajes');
+    if (!res.ok) throw new Error();
+    allViajes = await res.json();
+    filterLista();
+  } catch(e) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Error al cargar datos</p></div>';
+  }
+}
+
+function filterLista() {
+  const fecha = document.getElementById('filter-fecha').value;
+  const estado = document.getElementById('filter-estado').value;
+  const camion = document.getElementById('filter-camion').value;
+  const buscar = document.getElementById('filter-buscar').value.toLowerCase();
+  const filtered = allViajes.filter(v =>
+    (!fecha   || v.fecha === fecha) &&
+    (!estado  || v.estado === estado) &&
+    (!camion  || v.camion === camion) &&
+    (!buscar  || v.cliente.toLowerCase().includes(buscar))
+  );
+  renderLista(filtered);
+}
+
+function renderLista(viajes) {
+  const container = document.getElementById('lista-container');
+  if (!viajes.length) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><p>No hay viajes que coincidan con los filtros</p></div>';
+    return;
+  }
+  container.innerHTML = `
+    <div class="table-wrapper">
+      <table class="viajes-table">
+        <thead><tr>
+          <th>Fecha</th><th>Hora</th><th>Cliente</th><th>Ruta</th>
+          <th>Tipo</th><th>Precio</th><th>Camión</th><th>Estado</th>
+          <th>Vendedor</th><th>Acciones</th>
+        </tr></thead>
+        <tbody>
+          ${viajes.map(v => `
+          <tr>
+            <td style="font-family:'DM Mono',monospace;font-size:12px;">${fmtDate(v.fecha)}</td>
+            <td style="font-family:'DM Mono',monospace;">${v.hora||'—'}</td>
+            <td><strong>${v.cliente}</strong><br><span style="font-size:11px;color:var(--muted);">${v.telefono||''}</span></td>
+            <td style="max-width:200px;"><span style="font-size:12px;">${v.origen||'—'} → ${v.destino||'—'}</span></td>
+            <td style="font-size:12px;">${v.tipo||'—'}</td>
+            <td style="font-family:'DM Mono',monospace;font-size:12px;">${fmtMoney(v.precio)}</td>
+            <td>${v.camion ? `<span style="font-size:12px;padding:3px 8px;background:rgba(232,93,26,0.1);border-radius:4px;color:var(--orange);">${v.camion}</span>` : '<span style="color:var(--muted);font-size:12px;">Sin asignar</span>'}</td>
+            <td><span class="status-badge status-${v.estado||'confirmado'}">${v.estado||'confirmado'}</span></td>
+            <td style="font-size:12px;color:var(--muted);">${v.vendedor||'—'}</td>
+            <td>
+              <div class="action-btns">
+                <button class="btn btn-outline btn-sm" onclick="openDetail('${v.id}')">Ver</button>
+              </div>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+// ─── DETALLE / ASIGNAR ────────────────────────────────────────
+function openDetail(id) {
+  const v = allViajes.find(x => x.id === id);
+  if (!v) { loadAgendaAndOpen(id); return; }
+  renderDetail(v);
+}
+async function loadAgendaAndOpen(id) {
+  try {
+    const res = await fetch('/.netlify/functions/obtener-viajes');
+    allViajes = await res.json();
+    const v = allViajes.find(x => x.id === id);
+    if (v) renderDetail(v);
+  } catch(e) {}
+}
+
+function renderDetail(v) {
+  const isDueno = currentUser.role === 'dueno';
+  const camionesSel = CAMIONES.map(c => `<option value="${c}" ${v.camion===c?'selected':''}>${c}</option>`).join('');
+  const ayuSel = AYUDANTES_OPC.map(n => `<option value="${n}" ${String(v.ayudantes)===String(n)?'selected':''}>${n}</option>`).join('');
+
+  document.getElementById('detail-content').innerHTML = `
+    <div class="modal-title">${v.cliente}</div>
+    <p class="modal-sub">${fmtDate(v.fecha)} — ${v.hora||'Sin hora'} · <span class="status-badge status-${v.estado||'confirmado'}">${v.estado||'confirmado'}</span></p>
+
+    <div class="detail-grid" style="margin-bottom:16px;">
+      <div class="detail-item"><label>Origen</label><p>${v.origen||'—'}</p></div>
+      <div class="detail-item"><label>Destino</label><p>${v.destino||'—'}</p></div>
+      <div class="detail-item"><label>Teléfono</label><p>${v.telefono||'—'}</p></div>
+      <div class="detail-item"><label>Tipo</label><p>${v.tipo||'—'}</p></div>
+      <div class="detail-item"><label>Precio presupuestado</label><p>${fmtMoney(v.precio)}</p></div>
+      <div class="detail-item"><label>Vendedor</label><p>${v.vendedor||'—'}</p></div>
+      ${v.notas ? `<div class="detail-item full" style="grid-column:1/-1"><label>Notas</label><p>${v.notas}</p></div>` : ''}
+    </div>
+
+    ${isDueno ? `
+    <div class="assign-section">
+      <h4>Asignación del dueño</h4>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Camión</label>
+          <select class="form-control" id="assign-camion">${camionesSel}</select>
+        </div>
+        <div class="form-group">
+          <label>Ayudantes</label>
+          <select class="form-control" id="assign-ayudantes">${ayuSel}</select>
+        </div>
+        <div class="form-group">
+          <label>Estado</label>
+          <select class="form-control" id="assign-estado">
+            <option value="confirmado" ${v.estado==='confirmado'?'selected':''}>Confirmado</option>
+            <option value="modificado" ${v.estado==='modificado'?'selected':''}>Modificado</option>
+            <option value="cancelado" ${v.estado==='cancelado'?'selected':''}>Cancelado</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button class="btn btn-success btn-sm" onclick="saveAssignment('${v.id}')">Guardar asignación</button>
+        <button class="btn btn-outline btn-sm" onclick="closeDetailModal()">Cerrar</button>
+      </div>
+    </div>
+    ` : `<button class="btn btn-outline btn-sm" onclick="closeDetailModal()">Cerrar</button>`}
+  `;
+  document.getElementById('detail-modal').classList.add('open');
+}
+
+function closeDetailModal() {
+  document.getElementById('detail-modal').classList.remove('open');
+}
+
+async function saveAssignment(id) {
+  const camion = document.getElementById('assign-camion').value;
+  const ayudantes = document.getElementById('assign-ayudantes').value;
+  const estado = document.getElementById('assign-estado').value;
+
+  try {
+    const res = await fetch('/.netlify/functions/actualizar-viaje', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, camion, ayudantes, estado })
+    });
+    if (!res.ok) throw new Error();
+    // Actualizar local
+    const idx = allViajes.findIndex(v => v.id === id);
+    if (idx >= 0) { allViajes[idx].camion = camion; allViajes[idx].ayudantes = ayudantes; allViajes[idx].estado = estado; }
+    showToast('Asignación guardada');
+    closeDetailModal();
+    if (document.getElementById('tab-agenda').classList.contains('active')) loadAgenda();
+    if (document.getElementById('tab-lista').classList.contains('active')) filterLista();
+  } catch(e) {
+    showToast('Error al guardar', 'error');
+  }
+}
+
+// ─── INIT ─────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeLoginModal(); closeDetailModal(); }
+});
+</script>
+</body>
+</html>
