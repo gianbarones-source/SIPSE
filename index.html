@@ -497,6 +497,23 @@
     .detail-grid { grid-template-columns: 1fr; }
   }
 </style>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1721621455494343');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1721621455494343&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
 
@@ -506,7 +523,7 @@
     <div class="nav-logo">SIPSE<span> MUDANZAS</span></div>
     <div class="nav-actions">
       <button class="btn btn-outline" onclick="openLoginModal()">Acceso interno</button>
-      <a href="https://wa.me/5491100000000?text=Hola,%20quiero%20un%20presupuesto" target="_blank" class="btn btn-primary">📱 WhatsApp</a>
+      <a href="https://wa.me/5491100000000?text=Hola,%20quiero%20un%20presupuesto" target="_blank" class="btn btn-primary" onclick="fbq('track','Contact')">📱 WhatsApp</a>
     </div>
   </nav>
 
@@ -515,7 +532,7 @@
     <h1 class="hero-title">MOVÉ<br>LO QUE<br><span class="accent">IMPORTA.</span></h1>
     <p class="hero-sub">Mudanzas y fletes en CABA, Conurbano Bonaerense y destinos del interior. Flota propia, equipo profesional.</p>
     <div class="hero-cta">
-      <a href="https://wa.me/5491100000000?text=Hola,%20quiero%20un%20presupuesto" target="_blank" class="btn btn-primary">Pedir presupuesto</a>
+      <a href="https://wa.me/5491100000000?text=Hola,%20quiero%20un%20presupuesto" target="_blank" class="btn btn-primary" onclick="fbq('track','Contact')">Pedir presupuesto</a>
       <a href="#servicios" class="btn btn-outline">Ver servicios</a>
     </div>
     <div class="hero-stats">
@@ -599,7 +616,7 @@
 
   <div class="contact-strip">
     <h2>¿NECESITÁS UN PRESUPUESTO?</h2>
-    <a href="https://wa.me/5491100000000?text=Hola,%20necesito%20un%20presupuesto%20para%20mudanza" target="_blank" class="btn btn-dark" style="font-size: 16px; padding: 16px 32px;">Escribinos por WhatsApp →</a>
+    <a href="https://wa.me/5491100000000?text=Hola,%20necesito%20un%20presupuesto%20para%20mudanza" target="_blank" class="btn btn-dark" style="font-size: 16px; padding: 16px 32px;" onclick="fbq('track','Contact')">Escribinos por WhatsApp →</a>
   </div>
 
   <footer>
