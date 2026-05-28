@@ -506,7 +506,7 @@
     <div class="nav-logo">SIPSE<span> MUDANZAS</span></div>
     <div class="nav-actions">
       <button class="btn btn-outline" onclick="openLoginModal()">Acceso interno</button>
-      <a href="https://wa.me/5491158489303?text=Hola,%20quiero%20un%20presupuesto" target="_blank" class="btn btn-primary">📱 WhatsApp</a>
+      <a href="https://wa.me/5491100000000?text=Hola,%20quiero%20un%20presupuesto" target="_blank" class="btn btn-primary">📱 WhatsApp</a>
     </div>
   </nav>
 
@@ -672,25 +672,18 @@
             </div>
           </div>
 
-          <div class="form-section-title">Servicio</div>
+          <div class="form-section-title">Servicios y precios</div>
 
-          <div class="form-group">
-            <label>Tipo de servicio *</label>
-            <select class="form-control" id="f-tipo">
-              <option value="">— Seleccionar —</option>
-              <option value="Mudanza completa">Mudanza completa</option>
-              <option value="Flete">Flete</option>
-              <option value="Instalación de aires">Instalación de aires</option>
-              <option value="Desinstalación de aires">Desinstalación de aires</option>
-              <option value="Desinstalación de luminaria">Desinstalación de luminaria</option>
-              <option value="Trabajos en altura">Trabajos en altura (balcón/izado)</option>
-              <option value="Embalaje">Embalaje profesional</option>
-              <option value="Otro">Otro (ver notas)</option>
-            </select>
+          <div class="full" id="servicios-container">
+            <!-- filas de servicio se agregan acá -->
           </div>
-          <div class="form-group">
-            <label>Precio presupuestado *</label>
-            <input type="number" class="form-control" id="f-precio" placeholder="Ej: 85000" min="0">
+
+          <div class="full" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <button type="button" class="btn btn-outline btn-sm" onclick="agregarServicio()" style="white-space:nowrap;">+ Agregar servicio</button>
+            <div id="total-box" style="display:none; margin-left:auto; background:rgba(232,93,26,0.12); border:1px solid rgba(232,93,26,0.35); border-radius:8px; padding:10px 20px; display:flex; align-items:center; gap:12px;">
+              <span style="font-size:13px; color:var(--muted);">Total presupuestado</span>
+              <span id="total-valor" style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--orange);">$0</span>
+            </div>
           </div>
 
           <div class="form-group full">
@@ -760,11 +753,12 @@
     <div class="form-group">
       <label>Usuario</label>
       <select class="form-control" id="login-user">
-  <option value="">— Seleccionar —</option>
-  <option value="ANDRES">Andres (Organizador)</option>
-  <option value="GIAN">Gian</option>
-  <option value="MALENA">Malena</option>
-</select>
+        <option value="">— Seleccionar —</option>
+        <option value="dueno">Dueño / Organizador</option>
+        <option value="vendedor1">Vendedor 1</option>
+        <option value="vendedor2">Vendedor 2</option>
+        <option value="vendedor3">Vendedor 3</option>
+      </select>
     </div>
     <div class="form-group">
       <label>Contraseña</label>
@@ -794,9 +788,10 @@ const AYUDANTES_OPC = [0,1,2,3,4,5];
 
 // Contraseñas (en producción estas van en variables de entorno del server)
 const USERS = {
-  'ANDRES':  { pass: '121085', role: 'dueno',    name: 'Organizador' },
-  'GIAN':    { pass: '011005', role: 'vendedor', name: 'Gian' },
-  'MALENA':  { pass: '022005', role: 'vendedor', name: 'Malena' },
+  'dueno':     { pass: 'sipse2024', role: 'dueno',    name: 'Organizador' },
+  'vendedor1': { pass: 'vende1',    role: 'vendedor', name: 'Vendedor 1' },
+  'vendedor2': { pass: 'vende2',    role: 'vendedor', name: 'Vendedor 2' },
+  'vendedor3': { pass: 'vende3',    role: 'vendedor', name: 'Vendedor 3' },
 };
 
 let currentUser = null;
@@ -882,9 +877,78 @@ function openMaps(field) {
   window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr+', Buenos Aires, Argentina')}`, '_blank');
 }
 
+// ─── SERVICIOS MÚLTIPLES ──────────────────────────────────────
+const TIPOS_SERVICIO = [
+  'Mudanza completa','Flete','Instalación de aires','Desinstalación de aires',
+  'Desinstalación de luminaria','Trabajos en altura (balcón/izado)',
+  'Embalaje profesional','Otro (ver notas)'
+];
+let servicioCount = 0;
+
+function agregarServicio() {
+  servicioCount++;
+  const id = servicioCount;
+  const container = document.getElementById('servicios-container');
+  const div = document.createElement('div');
+  div.id = `srv-row-${id}`;
+  div.style.cssText = 'display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:end; margin-bottom:10px;';
+  div.innerHTML = `
+    <div>
+      ${id === 1 ? '<label style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:1px;color:var(--muted);display:block;margin-bottom:8px;">Tipo de servicio *</label>' : ''}
+      <select class="form-control srv-tipo" onchange="recalcularTotal()">
+        <option value="">— Seleccionar —</option>
+        ${TIPOS_SERVICIO.map(t => `<option value="${t}">${t}</option>`).join('')}
+      </select>
+    </div>
+    <div>
+      ${id === 1 ? '<label style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:1px;color:var(--muted);display:block;margin-bottom:8px;">Precio</label>' : ''}
+      <input type="number" class="form-control srv-precio" placeholder="$ monto" min="0" style="width:130px;" oninput="recalcularTotal()">
+    </div>
+    <button type="button" onclick="quitarServicio(${id})" style="padding:12px 14px; background:rgba(231,76,60,0.1); border:1px solid rgba(231,76,60,0.3); border-radius:6px; color:var(--danger); cursor:pointer; font-size:16px; ${id===1?'margin-top:24px':''}" title="Quitar">✕</button>
+  `;
+  container.appendChild(div);
+  recalcularTotal();
+  // Mostrar total box
+  document.getElementById('total-box').style.display = 'flex';
+}
+
+function quitarServicio(id) {
+  const el = document.getElementById(`srv-row-${id}`);
+  if (el) el.remove();
+  recalcularTotal();
+  if (!document.querySelectorAll('.srv-row').length) {
+    document.getElementById('total-box').style.display = 'none';
+  }
+}
+
+function recalcularTotal() {
+  const precios = [...document.querySelectorAll('.srv-precio')];
+  const total = precios.reduce((sum, el) => sum + (parseFloat(el.value) || 0), 0);
+  document.getElementById('total-valor').textContent = '$' + total.toLocaleString('es-AR');
+  document.getElementById('total-box').style.display = precios.length ? 'flex' : 'none';
+}
+
+function getServiciosData() {
+  const rows = document.getElementById('servicios-container').querySelectorAll('[id^="srv-row-"]');
+  const servicios = [];
+  rows.forEach(row => {
+    const tipo = row.querySelector('.srv-tipo').value;
+    const precio = parseFloat(row.querySelector('.srv-precio').value) || 0;
+    if (tipo) servicios.push({ tipo, precio });
+  });
+  return servicios;
+}
+
+function limpiarServicios() {
+  document.getElementById('servicios-container').innerHTML = '';
+  servicioCount = 0;
+  document.getElementById('total-box').style.display = 'none';
+  document.getElementById('total-valor').textContent = '$0';
+}
+
 // ─── SUBMIT VIAJE ─────────────────────────────────────────────
 async function submitViaje() {
-  const fields = ['f-fecha','f-hora','f-cliente','f-origen','f-destino','f-tipo'];
+  const fields = ['f-fecha','f-hora','f-cliente','f-origen','f-destino'];
   for (const f of fields) {
     if (!document.getElementById(f).value.trim()) {
       showToast('Completá todos los campos obligatorios (*)', 'error');
@@ -893,6 +957,16 @@ async function submitViaje() {
     }
   }
 
+  const servicios = getServiciosData();
+  if (!servicios.length) {
+    showToast('Agregá al menos un servicio', 'error');
+    return;
+  }
+
+  const totalPrecio = servicios.reduce((s, x) => s + x.precio, 0);
+  const tiposTexto = servicios.map(s => s.tipo).join(' + ');
+  const detalle = servicios.map(s => `${s.tipo}: $${s.precio.toLocaleString('es-AR')}`).join(' | ');
+
   const data = {
     fecha:    document.getElementById('f-fecha').value,
     hora:     document.getElementById('f-hora').value,
@@ -900,8 +974,9 @@ async function submitViaje() {
     telefono: document.getElementById('f-telefono').value.trim(),
     origen:   document.getElementById('f-origen').value.trim(),
     destino:  document.getElementById('f-destino').value.trim(),
-    tipo:     document.getElementById('f-tipo').value,
-    precio:   document.getElementById('f-precio').value || '',
+    tipo:     tiposTexto,
+    precio:   totalPrecio,
+    detalle_servicios: detalle,
     notas:    document.getElementById('f-notas').value.trim(),
     vendedor: currentUser.name,
     estado:   'confirmado',
@@ -922,12 +997,11 @@ async function submitViaje() {
     });
     if (!res.ok) throw new Error(await res.text());
     showToast('Viaje cargado correctamente');
-    // Limpiar form
-    ['f-cliente','f-telefono','f-origen','f-destino','f-precio','f-notas'].forEach(id => {
+    ['f-cliente','f-telefono','f-origen','f-destino','f-notas'].forEach(id => {
       document.getElementById(id).value = '';
     });
-    document.getElementById('f-tipo').selectedIndex = 0;
     document.getElementById('f-hora').value = '';
+    limpiarServicios();
   } catch(e) {
     showToast('Error al guardar. Revisá la conexión.', 'error');
     console.error(e);
@@ -1157,7 +1231,8 @@ function renderDetail(v) {
       <div class="detail-item"><label>Destino</label><p>${v.destino||'—'}</p></div>
       <div class="detail-item"><label>Teléfono</label><p>${v.telefono||'—'}</p></div>
       <div class="detail-item"><label>Tipo</label><p>${v.tipo||'—'}</p></div>
-      <div class="detail-item"><label>Precio presupuestado</label><p>${fmtMoney(v.precio)}</p></div>
+      <div class="detail-item"><label>Precio total</label><p>${fmtMoney(v.precio)}</p></div>
+      ${v.detalle_servicios ? `<div class="detail-item" style="grid-column:1/-1"><label>Detalle de servicios</label><p style="font-size:13px;color:var(--muted);">${v.detalle_servicios.split(' | ').join('<br>')}</p></div>` : ''}
       <div class="detail-item"><label>Vendedor</label><p>${v.vendedor||'—'}</p></div>
       ${v.notas ? `<div class="detail-item full" style="grid-column:1/-1"><label>Notas</label><p>${v.notas}</p></div>` : ''}
     </div>
