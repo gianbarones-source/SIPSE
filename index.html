@@ -760,12 +760,11 @@
     <div class="form-group">
       <label>Usuario</label>
       <select class="form-control" id="login-user">
-        <option value="">— Seleccionar —</option>
-        <option value="ANDRES">Dueño / Organizador</option>
-        <option value="GIAN">Vendedor 1</option>
-        <option value="MALENA">Vendedor 2</option>
-      
-      </select>
+  <option value="">— Seleccionar —</option>
+  <option value="ANDRES">Andres (Organizador)</option>
+  <option value="GIAN">Gian</option>
+  <option value="MALENA">Malena</option>
+</select>
     </div>
     <div class="form-group">
       <label>Contraseña</label>
@@ -795,9 +794,9 @@ const AYUDANTES_OPC = [0,1,2,3,4,5];
 
 // Contraseñas (en producción estas van en variables de entorno del server)
 const USERS = {
-  'ANDRES':     { pass: '121085', role: 'ANDRES',    name: 'Organizador' },
-  'GIAN': { pass: '011005',    role: 'vendedor', name: 'GIAN' },
-  'MALENA': { pass: '022005',    role: 'vendedor', name: 'MALENA' },
+  'ANDRES':  { pass: '121085', role: 'dueno',    name: 'Organizador' },
+  'GIAN':    { pass: '011005', role: 'vendedor', name: 'Gian' },
+  'MALENA':  { pass: '022005', role: 'vendedor', name: 'Malena' },
 };
 
 let currentUser = null;
